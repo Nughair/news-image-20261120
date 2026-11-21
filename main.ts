@@ -3,7 +3,7 @@
 // How the entry is built — two paths, one artifact:
 //
 //   1. The true build (canonical). The entry image is rendered, not
-//      stored as data: generate_v2.py — the Python (Pillow) broadsheet
+//      stored as data: generate_b.py — the Python (Pillow) broadsheet
 //      generator that produced this front page (36 stories: 3 leads,
 //      10 feature cards, 23 briefs) — is bundled in this repository.
 //      This program copies it into a scratch directory, runs its
@@ -17,18 +17,18 @@
 //      in a node-only image with no python3/Pillow, where the true
 //      build cannot run (the first graded run of this entry's v1
 //      exited 1 in 165 ms for exactly that reason). The committed
-//      entry.png beside this file IS the v2 generator's verified
-//      output — produced by path 1, 291,097 bytes, sha256
-//      7d3070dfe9ff532f9e970932f9a440266e747be4b92250e24be64352c2ca50d7 —
+//      entry.png beside this file IS the draft B generator's verified
+//      output — produced by path 1, 272,325 bytes, sha256
+//      3091b1cc62685a22fdc147a9d0ed322ad571905538d0c7313f1dcf10c043fe91 —
 //      so when the true build is unavailable, this program validates
 //      that committed file the same way and emits it unchanged. The
 //      fallback is a packaging accommodation for the harness, never a
 //      substitute render: if neither path yields a valid image, the
 //      program exits non-zero.
 //
-// (generate_drafts.py, the v1 generator whose render is this entry's
-// earlier version, remains in the repository for the record; this
-// entrypoint builds v2.)
+// (generate_drafts.py and generate_v2.py, the v1 and v2 generators
+// whose renders are this entry's earlier versions, remain in the
+// repository for the record; this entrypoint builds draft B.)
 //
 // Output goes to entry.png in $MAKEFUN_OUTPUT_DIR when set, else
 // /output where that directory exists (the grader's container), else
@@ -55,7 +55,7 @@ const MAX_BYTES = 1_048_576; // 1 MiB gate limit
 const PNG_MAGIC = [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a];
 
 const here = dirname(fileURLToPath(import.meta.url));
-const generatorPath = join(here, 'generate_v2.py');
+const generatorPath = join(here, 'generate_b.py');
 const committedPath = join(here, 'entry.png');
 
 function log(message) {
@@ -100,16 +100,16 @@ function emit(bytes, outPath) {
   log(`wrote ${outPath} (${bytes.length} bytes, sha256 ${sha256(bytes)})`);
 }
 
-// Path 1: run the bundled v2 generator. Returns { bytes } on success,
+// Path 1: run the bundled draft B generator. Returns { bytes } on success,
 // or { error } describing why the true build could not produce it.
 function tryTrueBuild() {
   if (!existsSync(generatorPath)) {
     return { error: `generator not found beside main.ts: ${generatorPath}` };
   }
-  const work = mkdtempSync(join(tmpdir(), 'news-image-20261120-v2-'));
+  const work = mkdtempSync(join(tmpdir(), 'news-image-20261120-b-'));
   try {
-    copyFileSync(generatorPath, join(work, 'generate_v2.py'));
-    const run = spawnSync('python3', ['generate_v2.py', 'final'], {
+    copyFileSync(generatorPath, join(work, 'generate_b.py'));
+    const run = spawnSync('python3', ['generate_b.py', 'final'], {
       cwd: work,
       stdio: 'inherit',
     });
@@ -119,7 +119,7 @@ function tryTrueBuild() {
     if (run.status !== 0) {
       return {
         error:
-          `generate_v2.py final exited with status ${run.status}` +
+          `generate_b.py final exited with status ${run.status}` +
           ` (signal ${run.signal ?? 'none'}) — python3/Pillow problem?`,
       };
     }
@@ -156,7 +156,7 @@ log(`output path: ${outPath}`);
 
 const built = tryTrueBuild();
 if (built.bytes) {
-  log('artifact produced by the TRUE BUILD (generate_v2.py final)');
+  log('artifact produced by the TRUE BUILD (generate_b.py final)');
   emit(built.bytes, outPath);
 } else {
   log(`true build unavailable: ${built.error}`);

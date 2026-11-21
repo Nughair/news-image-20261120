@@ -27,6 +27,20 @@ on Saturday and Sunday) were excluded and are listed in `STORIES.md`.
 
 ![Friday 20 November 2026 — the world in one image](entry.png)
 
+## Draft B — 21 November 2026
+
+The current version of the entry. Draft B prints the **same 36 stories**
+as v2 (`STORIES.md` is unchanged), re-slotted: DR Congo's Ebola outbreak
+and Peru's M6.8 Junín quake are promoted from briefs to pictured feature
+cards, while Italy's general strike and Japan's CPI move down to the
+briefs. The Akvan lead panel now carries "440,000+ evacuated" beside the
+Gopalpur landfall marker, the markets lead is a three-bar "Friday close"
+chart (Taipei −6.2%, Seoul −5.2%, Tokyo −5.1% from one shared zero
+baseline), and Phillips' 118 is shown exactly once on the whole page.
+The generator is `generate_b.py`; the committed `entry.png` is its
+verified output — 1024×1024, 272,325 bytes, sha256
+`3091b1cc62685a22fdc147a9d0ed322ad571905538d0c7313f1dcf10c043fe91`.
+
 ## Run it
 
 ```sh
@@ -41,16 +55,17 @@ one of two paths and writes it to `entry.png` in `$MAKEFUN_OUTPUT_DIR`
 (default `/output` where that directory exists, else beside `main.ts`):
 
 1. **The true build (canonical).** It copies the bundled generator,
-   `generate_v2.py`, into a scratch directory and executes
-   `python3 generate_v2.py final` there (Python with Pillow), then
+   `generate_b.py`, into a scratch directory and executes
+   `python3 generate_b.py final` there (Python with Pillow), then
    validates the render — PNG magic bytes and the 1 MiB size limit.
    There is no sha256 gate on this path: Pillow and font versions
    legitimately differ between machines. Where this build was made,
-   the render is deterministic — 1024×1024, 291,097 bytes, sha256
-   `7d3070dfe9ff532f9e970932f9a440266e747be4b92250e24be64352c2ca50d7`,
+   the render is deterministic — 1024×1024, 272,325 bytes, sha256
+   `3091b1cc62685a22fdc147a9d0ed322ad571905538d0c7313f1dcf10c043fe91`,
    byte-identical to the `entry.png` committed in this repository.
-   (`generate_drafts.py`, the v1 generator, remains in the repository
-   for provenance; it is no longer the build path.)
+   (`generate_drafts.py` and `generate_v2.py`, the v1 and v2
+   generators, remain in the repository for provenance; neither is
+   the build path.)
 2. **The fallback.** The make.fun grading harness runs the entrypoint
    in a node-only image with no python3/Pillow, where the true build
    cannot run. In that case `main.ts` validates the committed
