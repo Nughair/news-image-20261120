@@ -7,20 +7,23 @@
 [![reward](https://make.fun/badge/news-image-20261120/Nughair/news-image-20261120/reward.svg)](https://make.fun/bounty/news-image-20261120)
 
 One 1024×1024 broadsheet summing up the world news of Friday 20 November
-2026. Two lead panels — Russian strikes hitting three Kyiv bridges, and
-the Asian tech sell-off that left Taiwan stocks down 17% over the week —
-sit above four wide cards (Cyclone Akvan's landfall in India, the UK–EU
-deal to ease food checks, the tanker ablaze off Oman, COP31 talks spilling
-into overtime), four cards (Italy's general strike, the US
-records-preservation warning, Morocco's arms-industry plan, the Lindela
-asylum-centre court case) and five one-line briefs. Every pictured event
-happened, or was first reported, on 20 November 2026; contested claims are
-attributed inside the image itself — the Kyiv toll to Ukrainian
-authorities, the tanker fire to UKMTO's projectile report against Iran's
-Guards' mine claim. Two tempting items were dropped at the date check: a
-US deep-sea mining auction AP had already reported on 19 November, and a
-Quito meeting the official readout dates to 19 November — neither belongs
-to this day (see `STORIES.md`).
+2026 — **36 stories** in all. Three illustrated lead panels lead the page:
+Russian strikes hitting Kyiv's bridges, Cyclone Akvan's landfall in
+Odisha (with its storm-track map), and the Asian AI sell-off that left
+Taiwan's Taiex down 6.2% on the day and 17.5% for the week. Below them sit
+a six-number strip, a region tally, and ten numbered feature cards —
+COP31's overtime talks in Antalya first, then the UK–EU reset, the
+Russian missile downed in Poland, the tanker fire off Oman, Iraq, Italy's
+general strike, Japan's CPI, Seoul's impeachment push, Kenya's Turkana
+production drilling and Wellington's cricket. The bottom half carries 23
+one-line briefs grouped by region — Europe, Asia, the Middle East and
+Oceania in the left column, the Americas and Africa in the right — each
+with its source named. Every pictured event happened, or was first
+reported, on 20 November 2026; contested claims are attributed inside the
+image itself — the Kyiv toll to Ukrainian authorities, the tanker fire to
+UKMTO's projectile report against Iran's Guards' mine claim. Items that
+failed the date check (events of Thursday 19 November, or still to come
+on Saturday and Sunday) were excluded and are listed in `STORIES.md`.
 
 ![Friday 20 November 2026 — the world in one image](entry.png)
 
@@ -38,14 +41,16 @@ one of two paths and writes it to `entry.png` in `$MAKEFUN_OUTPUT_DIR`
 (default `/output` where that directory exists, else beside `main.ts`):
 
 1. **The true build (canonical).** It copies the bundled generator,
-   `generate_drafts.py`, into a scratch directory and executes
-   `python3 generate_drafts.py final` there (Python with Pillow), then
+   `generate_v2.py`, into a scratch directory and executes
+   `python3 generate_v2.py final` there (Python with Pillow), then
    validates the render — PNG magic bytes and the 1 MiB size limit.
    There is no sha256 gate on this path: Pillow and font versions
    legitimately differ between machines. Where this build was made,
-   the render is deterministic — 165,561 bytes, sha256
-   `ffbfc3c317e303131530c0b12ffad19ed8ffd9b7eb66ad3ea4083cd0b1a28162`,
+   the render is deterministic — 1024×1024, 291,097 bytes, sha256
+   `7d3070dfe9ff532f9e970932f9a440266e747be4b92250e24be64352c2ca50d7`,
    byte-identical to the `entry.png` committed in this repository.
+   (`generate_drafts.py`, the v1 generator, remains in the repository
+   for provenance; it is no longer the build path.)
 2. **The fallback.** The make.fun grading harness runs the entrypoint
    in a node-only image with no python3/Pillow, where the true build
    cannot run. In that case `main.ts` validates the committed
