@@ -27,16 +27,21 @@ to this day (see `STORIES.md`).
 ## Run it
 
 ```sh
-# the entrypoint: writes the entry image to the output directory
+# the entrypoint: renders the entry image to the output directory
 mkdir -p out && MAKEFUN_OUTPUT_DIR=out node main.ts
 ```
 
-`main.ts` (Node 22, standard library only) decodes `entry.png.b64` — the
-base64 form of the finished `entry.png` — validates the PNG magic bytes and
-the 1 MiB size limit, and writes the exact bytes to `entry.png` in
-`$MAKEFUN_OUTPUT_DIR` (default `/output`). The output is deterministic:
-every run produces the same file, 165,561 bytes, sha256
-`ffbfc3c317e303131530c0b12ffad19ed8ffd9b7eb66ad3ea4083cd0b1a28162`. See
+## How the entry is built
+
+`main.ts` (Node 22, standard library only) runs the bundled generator:
+it copies `generate_drafts.py` into a scratch directory, executes
+`python3 generate_drafts.py final` there (Python with Pillow), validates
+the render — PNG magic bytes, the 1 MiB size limit, and the approved
+sha256 — and writes it to `entry.png` in `$MAKEFUN_OUTPUT_DIR` (default
+`/output` where that directory exists, else beside `main.ts`). The build
+is deterministic: every run produces the same file, 165,561 bytes,
+sha256 `ffbfc3c317e303131530c0b12ffad19ed8ffd9b7eb66ad3ea4083cd0b1a28162`,
+byte-identical to the `entry.png` committed in this repository. See
 `STORIES.md` for every story, figure and source.
 
 ## make.fun
